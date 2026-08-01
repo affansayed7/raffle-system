@@ -68,6 +68,73 @@ body {
   to { transform: translateY(-10vh) translateX(20px); opacity: 0; }
 }
 
+/* Corner webs */
+.corner-web {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+}
+.corner-web--tl { top: 0; left: 0; }
+.corner-web--br { bottom: 0; right: 0; }
+
+/* Dangling, swaying spider */
+.dangler {
+  position: absolute;
+  top: 0;
+  left: 12%;
+  transform-origin: top center;
+  animation: sway 4.5s ease-in-out infinite;
+  z-index: 5;
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+
+.dangler .thread {
+  width: 1px;
+  height: 22vh;
+  background: linear-gradient(rgba(255,255,255,0.35), rgba(255,255,255,0.05));
+  margin: 0 auto;
+}
+
+.dangler .spider {
+  width: 34px;
+  height: 34px;
+  display: block;
+  margin: -2px auto 0;
+  filter: drop-shadow(0 0 6px rgba(230, 36, 41, 0.5));
+  animation: bob 2.2s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+.crawler {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  offset-path: path("M -50,150 Q 500,50 1050,300");
+  offset-rotate: auto;
+  animation: crawl 9s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 5px rgba(230, 36, 41, 0.6));
+}
+
+@keyframes crawl {
+  from { offset-distance: 0%; }
+  to { offset-distance: 100%; }
+}
+
+@media (max-width: 600px) {
+  .corner-web { width: 100px; height: 100px; }
+  .dangler { left: 6%; }
+  .dangler .thread { height: 16vh; }
+  .crawler { offset-path: path("M -20,120 Q 200,40 420,220"); }
+}
+
 .screen {
   min-height: 100vh;
   width: 100%;

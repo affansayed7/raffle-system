@@ -68,7 +68,7 @@ body {
   to { transform: translateY(-10vh) translateX(20px); opacity: 0; }
 }
 
-/* Corner webs */
+/* Corner web */
 .corner-web {
   position: absolute;
   width: 160px;

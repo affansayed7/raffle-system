@@ -1,6 +1,6 @@
-# Spider Seat Raffle
+# Spider-Man Movie Seat Raffle
 
-A Spider-Verse-styled seat raffle for assigning theatre seats D4–D9 to 6 people.
+A Spider-Verse-styled seat raffle for assigning theatre seats D4–D9 to 6 people for a Spider-Man movie screening.
 
 ## How it works
 - Seats are shuffled once using a Fisher-Yates shuffle (unbiased — every seat order is equally likely).
@@ -8,10 +8,10 @@ A Spider-Verse-styled seat raffle for assigning theatre seats D4–D9 to 6 peopl
 - No seat can repeat, and there's no way to steer a specific seat to a specific person — it's a genuinely fair draw.
 
 ## Hosting on GitHub Pages
-1. Create a new GitHub repo (e.g. `spider-seat-raffle`).
+1. Create a new GitHub repo (e.g. `spiderman-movie-seat-raffle`).
 2. Push these files (`index.html`, `style.css`, `script.js`) to the repo.
 3. Go to **Settings → Pages**, set the source branch to `main` (root), and save.
-4. Your site will be live at `https://<your-username>.github.io/spider-seat-raffle/`.
+4. Your site will be live at `https://<your-username>.github.io/spiderman-movie-seat-raffle/`.
 
 ## Local preview
 Just open `index.html` in a browser — no build step needed.

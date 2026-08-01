@@ -4,8 +4,33 @@
 
 const ALL_SEATS = ["D4", "D5", "D6", "D7", "D8", "D9"];
 
+const STORAGE_KEY = "spiderSeatRaffle";
+
 let remainingSeats = [];
 let results = []; // { name, seat }
+
+function saveToStorage() {
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify({ remainingSeats, results })
+  );
+}
+
+function loadFromStorage() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return false;
+  try {
+    const data = JSON.parse(raw);
+    if (Array.isArray(data.remainingSeats) && Array.isArray(data.results)) {
+      remainingSeats = data.remainingSeats;
+      results = data.results;
+      return true;
+    }
+  } catch (e) {
+    /* ignore corrupt data */
+  }
+  return false;
+}
 
 const screens = {
   landing: document.getElementById("landing"),
@@ -48,6 +73,7 @@ function resetState() {
   progressHint.textContent = `0 of ${ALL_SEATS.length} seats assigned`;
   nameInput.value = "";
   errorMsg.textContent = "";
+  saveToStorage();
 }
 
 function spawnParticles() {
@@ -85,12 +111,16 @@ spinBtn.addEventListener("click", () => {
 
   errorMsg.textContent = "";
   showScreen("loading");
+  runCalculatingAnimation();
 
   setTimeout(() => {
+    stopCalculatingAnimation();
+
     // Take the next seat off the pre-shuffled list — genuinely random,
     // no way to steer a specific seat to a specific person.
     const seat = remainingSeats.shift();
     results.push({ name, seat });
+    saveToStorage();
 
     personName.textContent = name;
     seatNumber.textContent = seat;
@@ -106,11 +136,38 @@ spinBtn.addEventListener("click", () => {
     continueBtn.classList.remove("hidden");
     continueBtn.textContent =
       remainingSeats.length > 0 ? "Next Person" : "See Final Results";
-  }, 1600);
+  }, 2200);
 });
+
+// Purely cosmetic "crunching numbers" text — the actual seat pick
+// already happened via the shuffle in resetState(); this is just flavor.
+const CALC_LINES = [
+  "Calculating spatial coordinates...",
+  "Cross-referencing dimensional seat matrix...",
+  "Resolving probability entanglement...",
+  "Running Fisher-Yates permutation...",
+  "Stabilizing the multiverse...",
+];
+
+let calcInterval = null;
+const loadingHeading = document.querySelector("#loading h2");
+
+function runCalculatingAnimation() {
+  let i = 0;
+  loadingHeading.textContent = CALC_LINES[0];
+  calcInterval = setInterval(() => {
+    i = (i + 1) % CALC_LINES.length;
+    loadingHeading.textContent = CALC_LINES[i];
+  }, 450);
+}
+
+function stopCalculatingAnimation() {
+  clearInterval(calcInterval);
+}
 
 continueBtn.addEventListener("click", () => {
   progressHint.textContent = `${results.length} of ${ALL_SEATS.length} seats assigned`;
+  saveToStorage();
 
   if (remainingSeats.length === 0) {
     renderSummary();
@@ -137,8 +194,26 @@ function escapeHtml(str) {
 }
 
 restartBtn.addEventListener("click", () => {
+  localStorage.removeItem(STORAGE_KEY);
   resetState();
   showScreen("landing");
 });
 
 spawnParticles();
+
+// On load: resume an in-progress raffle if one exists in storage.
+(function init() {
+  const hasSaved = loadFromStorage();
+  if (hasSaved && results.length > 0) {
+    progressHint.textContent = `${results.length} of ${ALL_SEATS.length} seats assigned`;
+    if (remainingSeats.length === 0) {
+      renderSummary();
+      showScreen("summary");
+    } else {
+      showScreen("app");
+    }
+  } else {
+    resetState();
+    showScreen("landing");
+  }
+})();

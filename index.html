@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Spider Seat Raffle</title>
+<link rel="stylesheet" href="style.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="background">
+    <div class="gradient"></div>
+    <div class="webs"></div>
+    <div class="particles" id="particles"></div>
+  </div>
+
+  <!-- Landing -->
+  <section id="landing" class="screen active">
+    <h1 class="title">SPIDER<span>SEAT</span>RAFFLE</h1>
+    <p class="subtitle">Into the Movie-Verse</p>
+    <button id="startBtn" class="btn">Enter the Multiverse</button>
+  </section>
+
+  <!-- Name entry -->
+  <section id="app" class="screen">
+    <div class="glass">
+      <h2>Who's up?</h2>
+      <p class="hint" id="progressHint">0 of 6 seats assigned</p>
+      <input id="nameInput" type="text" placeholder="Peter Parker..." autocomplete="off" />
+      <button id="spinBtn" class="btn">Spin the Web</button>
+      <p class="error" id="errorMsg"></p>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <section id="loading" class="screen">
+    <div class="loader">
+      <div class="spinner"></div>
+      <h2>Searching across the Spider-Verse...</h2>
+    </div>
+  </section>
+
+  <!-- Reveal -->
+  <section id="reveal" class="screen">
+    <div class="flip-card" id="flipCard">
+      <div class="flip-inner">
+        <div class="front">?</div>
+        <div class="back">
+          <p class="back-label">SEAT ASSIGNED</p>
+          <h2 id="personName"></h2>
+          <h1 id="seatNumber"></h1>
+        </div>
+      </div>
+    </div>
+    <button id="continueBtn" class="btn hidden">Next Person</button>
+  </section>
+
+  <!-- Summary -->
+  <section id="summary" class="screen">
+    <h1>Final Seat Allocation</h1>
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Seat</th></tr>
+      </thead>
+      <tbody id="summaryBody"></tbody>
+    </table>
+    <p class="enjoy">🎬 Enjoy the movie!</p>
+    <button id="restartBtn" class="btn secondary">Restart</button>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

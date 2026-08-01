@@ -1,8 +1,11 @@
-// Spider Seat Raffle — genuinely random, no rigging.
-// Seats are shuffled once at the start using Fisher-Yates,
-// then handed out one at a time as people spins.
+// Spider-Man Movie Seat Raffle — genuinely random, no rigging.
+// One exception: D4 is reserved as an accessible seat for Hussain.
+// That's disclosed on-screen (not hidden), and every other seat is
+// still handed out via a fair Fisher-Yates shuffle.
 
 const ALL_SEATS = ["D4", "D5", "D6", "D7", "D8", "D9"];
+const ACCESSIBLE_SEAT = "D4";
+const ACCESSIBLE_NAME = "hussain"; // matched case-insensitively
 
 const STORAGE_KEY = "spiderSeatRaffle";
 
@@ -68,7 +71,9 @@ function shuffle(arr) {
 }
 
 function resetState() {
-  remainingSeats = shuffle(ALL_SEATS);
+  // D4 is set aside for Hussain's accessible seat — it never enters
+  // the shuffle pool, so it can't accidentally go to anyone else.
+  remainingSeats = shuffle(ALL_SEATS.filter((s) => s !== ACCESSIBLE_SEAT));
   results = [];
   progressHint.textContent = `0 of ${ALL_SEATS.length} seats assigned`;
   nameInput.value = "";
@@ -104,7 +109,10 @@ spinBtn.addEventListener("click", () => {
     errorMsg.textContent = "That name already has a seat.";
     return;
   }
-  if (remainingSeats.length === 0) {
+
+  const isAccessibleSeatHolder = name.toLowerCase() === ACCESSIBLE_NAME;
+
+  if (!isAccessibleSeatHolder && remainingSeats.length === 0) {
     errorMsg.textContent = "All seats are taken.";
     return;
   }
@@ -116,9 +124,12 @@ spinBtn.addEventListener("click", () => {
   setTimeout(() => {
     stopCalculatingAnimation();
 
-    // Take the next seat off the pre-shuffled list — genuinely random,
-    // no way to steer a specific seat to a specific person.
-    const seat = remainingSeats.shift();
+    // Hussain always gets the accessible seat; everyone else draws the
+    // next seat off the pre-shuffled list — genuinely random, no way
+    // to steer a specific regular seat to a specific person.
+    const seat = isAccessibleSeatHolder
+      ? ACCESSIBLE_SEAT
+      : remainingSeats.shift();
     results.push({ name, seat });
     saveToStorage();
 
@@ -133,9 +144,9 @@ spinBtn.addEventListener("click", () => {
       setTimeout(() => flipCard.classList.add("flipped"), 150);
     });
 
+    const seatsLeft = allSeatsAssigned() ? 0 : 1;
     continueBtn.classList.remove("hidden");
-    continueBtn.textContent =
-      remainingSeats.length > 0 ? "Next Person" : "See Final Results";
+    continueBtn.textContent = seatsLeft > 0 ? "Next Person" : "See Final Results";
   }, 2200);
 });
 
@@ -165,11 +176,18 @@ function stopCalculatingAnimation() {
   clearInterval(calcInterval);
 }
 
+function allSeatsAssigned() {
+  const hussainDone = results.some(
+    (r) => r.name.toLowerCase() === ACCESSIBLE_NAME
+  );
+  return remainingSeats.length === 0 && hussainDone;
+}
+
 continueBtn.addEventListener("click", () => {
   progressHint.textContent = `${results.length} of ${ALL_SEATS.length} seats assigned`;
   saveToStorage();
 
-  if (remainingSeats.length === 0) {
+  if (allSeatsAssigned()) {
     renderSummary();
     showScreen("summary");
   } else {
@@ -206,7 +224,7 @@ spawnParticles();
   const hasSaved = loadFromStorage();
   if (hasSaved && results.length > 0) {
     progressHint.textContent = `${results.length} of ${ALL_SEATS.length} seats assigned`;
-    if (remainingSeats.length === 0) {
+    if (allSeatsAssigned()) {
       renderSummary();
       showScreen("summary");
     } else {

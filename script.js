@@ -1,6 +1,6 @@
 // Spider Seat Raffle — genuinely random, no rigging.
 // Seats are shuffled once at the start using Fisher-Yates,
-// then handed out one at a time as people spin.
+// then handed out one at a time as people spins.
 
 const ALL_SEATS = ["D4", "D5", "D6", "D7", "D8", "D9"];
 
